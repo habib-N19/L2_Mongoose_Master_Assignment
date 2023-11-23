@@ -1,4 +1,3 @@
-// import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import {
   TAddress,
@@ -7,7 +6,8 @@ import {
   TUser,
   UserModel,
 } from './user.interface';
-// import config from '../../config';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const fullNameSchema = new Schema<TFullName>({
   firstName: {
@@ -58,6 +58,10 @@ const orderSchema = new Schema<TOrder>({
 
 const userSchema = new Schema<TUser, UserModel>({
   userId: { type: Number, required: true },
+  password: {
+    type: String,
+    required: [true, 'Password required'],
+  },
   username: {
     type: String,
     required: [true, 'Username required'],
@@ -94,15 +98,15 @@ const userSchema = new Schema<TUser, UserModel>({
     required: [true, 'Orders required'],
   },
 });
-// userSchema.pre('save', async function (next) {
-//   // eslint-disable-next-line @typescript-eslint/no-this-alias
-//   const user = this;
-//   user.password = await bcrypt.hash(
-//     user.password,
-//     Number(config.bcrypt_salt_round),
-//   );
-//   next();
-// });
+userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_round),
+  );
+  next();
+});
 // userSchema.post('save', function (doc, next) {
 //   doc.password = '';
 //   next();
