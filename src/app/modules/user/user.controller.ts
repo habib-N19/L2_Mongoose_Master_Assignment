@@ -26,8 +26,22 @@ const getAllUsers = async (req: Request, res: Response) => {
     console.log(error);
   }
 };
+const getSingleUserByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const result = await UserServices.getSingleUserByUserIdFromDB(userId);
+    res.status(200).json({
+      success: true,
+      message: 'User fetched successfully',
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const UserControllers = {
   createUser,
   getAllUsers,
+  getSingleUserByUserId,
 };
