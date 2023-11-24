@@ -5,7 +5,6 @@ const createUserInDB = async (user: TUser) => {
   if (await User.isUserExists(user.userId.toString())) {
     throw new Error('User already exists ');
   }
-
   const result = await User.create(user);
   return result;
 };

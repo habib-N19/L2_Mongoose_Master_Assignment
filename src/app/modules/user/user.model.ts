@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
 import {
   TAddress,
@@ -8,6 +9,7 @@ import {
 } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import { NextFunction } from 'express';
 
 const fullNameSchema = new Schema<TFullName>({
   firstName: {
@@ -61,10 +63,12 @@ const userSchema = new Schema<TUser, UserModel>({
   password: {
     type: String,
     required: [true, 'Password required'],
+    // select: false,
   },
   username: {
     type: String,
     required: [true, 'Username required'],
+    unique: true,
   },
   fullName: {
     type: fullNameSchema,
@@ -77,6 +81,7 @@ const userSchema = new Schema<TUser, UserModel>({
   email: {
     type: String,
     required: [true, 'Email required'],
+    unique: true,
     trim: true,
     minlength: [5, 'Email must be at least 5 characters'],
     maxlength: [50, 'Email must be less than 50 characters'],
@@ -107,10 +112,13 @@ userSchema.pre('save', async function (next) {
   );
   next();
 });
-// userSchema.post('save', function (doc, next) {
-//   doc.password = '';
-//   next();
-// });
+userSchema.methods.toJSON = function (next: NextFunction) {
+  const user = this;
+  const userObject = user.toObject();
+  delete userObject.password;
+  return userObject;
+  next();
+};
 userSchema.statics.isUserExists = async function (userId: string) {
   const existingUser = await User.findOne({ userId });
   return existingUser;
