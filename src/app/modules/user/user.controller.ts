@@ -46,7 +46,9 @@ const getAllUsers = async (req: Request, res: Response) => {
 const getSingleUserByUserId = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {
-    const result = await UserServices.getSingleUserByUserIdFromDB(userId);
+    const result = await UserServices.getSingleUserByUserIdFromDB(
+      Number(userId),
+    );
     res.status(200).json({
       success: true,
       message: 'User fetched successfully',
@@ -94,7 +96,7 @@ const updateUserByUserId = async (req: Request, res: Response) => {
 const deleteUserById = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const result = await UserServices.deleteUserByUserIdFromDB(userId);
+    const result = await UserServices.deleteUserByUserIdFromDB(Number(userId));
     res.status(200).json({
       success: true,
       message: 'User deleted successfully',
@@ -112,10 +114,38 @@ const deleteUserById = async (req: Request, res: Response) => {
     });
   }
 };
+// add a new product order in orders
+const addProductOrder = async (req: Request, res: Response) => {
+  console.log(req.params, req.body);
+  try {
+    const { userId } = req.params;
+    const orders = req.body;
+    const result = await UserServices.addProductOrderToDB(
+      Number(userId),
+      orders,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'Product added successfully',
+      data: null,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Internal server error',
+      error: {
+        code: 500,
+        description: 'Product not added',
+      },
+    });
+  }
+};
 export const UserControllers = {
   createUser,
   getAllUsers,
   getSingleUserByUserId,
   updateUserByUserId,
   deleteUserById,
+  addProductOrder,
 };
