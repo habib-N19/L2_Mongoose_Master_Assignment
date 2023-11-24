@@ -116,14 +116,10 @@ const deleteUserById = async (req: Request, res: Response) => {
 };
 // add a new product order in orders
 const addProductOrder = async (req: Request, res: Response) => {
-  console.log(req.params, req.body);
   try {
     const { userId } = req.params;
     const orders = req.body;
-    const result = await UserServices.addProductOrderToDB(
-      Number(userId),
-      orders,
-    );
+    await UserServices.addProductOrderToDB(Number(userId), orders);
     res.status(200).json({
       success: true,
       message: 'Product added successfully',
@@ -141,6 +137,34 @@ const addProductOrder = async (req: Request, res: Response) => {
     });
   }
 };
+
+// get all orders for a specific user
+const getALlOrdersByUserId = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.getAllOrdersByUserIdFromDB(
+      Number(userId),
+    );
+    res.status(200).json({
+      success: true,
+      message: 'Order fetched successfully',
+      data: {
+        orders: result,
+      },
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Internal server error',
+      error: {
+        code: 404,
+        description: 'Order not found',
+      },
+    });
+  }
+};
+
 export const UserControllers = {
   createUser,
   getAllUsers,
@@ -148,4 +172,5 @@ export const UserControllers = {
   updateUserByUserId,
   deleteUserById,
   addProductOrder,
+  getALlOrdersByUserId,
 };
