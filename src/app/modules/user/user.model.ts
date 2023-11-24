@@ -59,7 +59,7 @@ const orderSchema = new Schema<TOrder>({
 });
 
 const userSchema = new Schema<TUser, UserModel>({
-  userId: { type: Number, required: true },
+  userId: { type: Number, required: true, unique: true },
   password: {
     type: String,
     required: [true, 'Password required'],
@@ -82,7 +82,6 @@ const userSchema = new Schema<TUser, UserModel>({
     type: String,
     required: [true, 'Email required'],
     unique: true,
-    trim: true,
     minlength: [5, 'Email must be at least 5 characters'],
     maxlength: [50, 'Email must be less than 50 characters'],
   },
@@ -100,7 +99,8 @@ const userSchema = new Schema<TUser, UserModel>({
   },
   orders: {
     type: [orderSchema],
-    required: [true, 'Orders required'],
+    required: false,
+    default: [],
   },
 });
 userSchema.pre('save', async function (next) {

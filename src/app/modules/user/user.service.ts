@@ -15,22 +15,30 @@ const getAllUsersFromDB = async () => {
   return result;
 };
 const getSingleUserByUserIdFromDB = async (userId: string) => {
+  if (!(await User.isUserExists(userId))) {
+    throw new Error('User not found');
+  }
   const result = await User.findOne({ userId });
-
   return result;
 };
 const updateUserInfoByUserIdFromDB = async (userId: string, user: TUser) => {
-    if(!await User.isUserExists(userId)){
-        throw new Error('User does not exist')
-    }
-
-    const result = await User.updateOne({userId}, user)
-    return result ; 
-
-}
+  if (!(await User.isUserExists(userId))) {
+    throw new Error('User does not exist');
+  }
+  const result = await User.updateOne({ userId }, user);
+  return result;
+};
+const deleteUserByUserIdFromDB = async (userId: string) => {
+  if (!(await User.isUserExists(userId))) {
+    throw new Error('User does not exist');
+  }
+  const result = await User.deleteOne({ userId });
+  return result;
+};
 export const UserServices = {
   createUserInDB,
   getAllUsersFromDB,
   getSingleUserByUserIdFromDB,
-  updateUserInfoByUserIdFromDB
+  updateUserInfoByUserIdFromDB,
+  deleteUserByUserIdFromDB,
 };

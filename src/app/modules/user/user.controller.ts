@@ -22,6 +22,48 @@ const createUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const result = await UserServices.getAllUsersFromDB();
+    res.status(200).json({
+      success: true,
+      message: 'All users fetched successfully',
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(404).json({
+      success: false,
+      message: error.message || 'Internal server error',
+      error: {
+        code: 404,
+        description: 'Users not found!',
+      },
+    });
+  }
+};
+const getSingleUserByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const result = await UserServices.getSingleUserByUserIdFromDB(userId);
+    res.status(200).json({
+      success: true,
+      message: 'User fetched successfully',
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(404).json({
+      success: false,
+      message: error.message || 'Internal server error',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
+    });
+  }
+};
 const updateUserByUserId = async (req: Request, res: Response) => {
   try {
     const { user } = req.body;
@@ -41,40 +83,39 @@ const updateUserByUserId = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',
-      error: error,
+      error: {
+        code: 500,
+        description: 'User not updated!',
+      },
     });
   }
 };
 
-const getAllUsers = async (req: Request, res: Response) => {
+const deleteUserById = async (req: Request, res: Response) => {
   try {
-    const result = await UserServices.getAllUsersFromDB();
+    const { userId } = req.params;
+    const result = await UserServices.deleteUserByUserIdFromDB(userId);
     res.status(200).json({
       success: true,
-      message: 'All users fetched successfully',
+      message: 'User deleted successfully',
       data: result,
     });
-  } catch (error) {
-    console.log(error);
-  }
-};
-const getSingleUserByUserId = async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  try {
-    const result = await UserServices.getSingleUserByUserIdFromDB(userId);
-    res.status(200).json({
-      success: true,
-      message: 'User fetched successfully',
-      data: result,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Internal server error',
+      error: {
+        code: 500,
+        description: 'User not deleted!',
+      },
     });
-  } catch (error) {
-    console.log(error);
   }
 };
-
 export const UserControllers = {
   createUser,
   getAllUsers,
   getSingleUserByUserId,
   updateUserByUserId,
+  deleteUserById,
 };
