@@ -9,7 +9,9 @@ const createUserInDB = async (user: TUser) => {
   return result;
 };
 const getAllUsersFromDB = async () => {
-  const result = await User.find();
+  const result = await User.find().select(
+    'username fullName age email address',
+  );
   return result;
 };
 const getSingleUserByUserIdFromDB = async (userId: string) => {
