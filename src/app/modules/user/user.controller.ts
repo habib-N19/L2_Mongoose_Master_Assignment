@@ -139,7 +139,7 @@ const addProductOrder = async (req: Request, res: Response) => {
 };
 
 // get all orders for a specific user
-const getALlOrdersByUserId = async (req: Request, res: Response) => {
+const getAllOrdersByUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const result = await UserServices.getAllOrdersByUserIdFromDB(
@@ -164,7 +164,33 @@ const getALlOrdersByUserId = async (req: Request, res: Response) => {
     });
   }
 };
-
+// get total pride of all orders for a specific user
+const getOrdersTotalPriceByUserId = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.getUsersOrderTotalPriceFromDB(
+      Number(userId),
+    );
+    res.status(200).json({
+      success: true,
+      message: 'Total price calculated successfully',
+      data: {
+        // console.log(result);
+        totalPrice: result[0].totalPrice,
+      },
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Internal server error',
+      error: {
+        code: 500,
+        description: 'Total price not calculated',
+      },
+    });
+  }
+};
 export const UserControllers = {
   createUser,
   getAllUsers,
@@ -172,5 +198,6 @@ export const UserControllers = {
   updateUserByUserId,
   deleteUserById,
   addProductOrder,
-  getALlOrdersByUserId,
+  getAllOrdersByUserId,
+  getOrdersTotalPriceByUserId,
 };
