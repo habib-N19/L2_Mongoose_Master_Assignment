@@ -19,8 +19,18 @@ const getSingleUserByUserIdFromDB = async (userId: string) => {
 
   return result;
 };
+const updateUserInfoByUserIdFromDB = async (userId: string, user: TUser) => {
+    if(!await User.isUserExists(userId)){
+        throw new Error('User does not exist')
+    }
+
+    const result = await User.updateOne({userId}, user)
+    return result ; 
+
+}
 export const UserServices = {
   createUserInDB,
   getAllUsersFromDB,
   getSingleUserByUserIdFromDB,
+  updateUserInfoByUserIdFromDB
 };

@@ -22,6 +22,30 @@ const createUser = async (req: Request, res: Response) => {
     });
   }
 };
+const updateUserByUserId = async (req: Request, res: Response) => {
+  try {
+    const { user } = req.body;
+    const userId = user.userId;
+    const zodParsedUpdatedData = userValidationSchema.parse(user);
+    const result = await UserServices.updateUserInfoByUserIdFromDB(
+      userId,
+      zodParsedUpdatedData,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'User updated successfully',
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Internal server error',
+      error: error,
+    });
+  }
+};
+
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const result = await UserServices.getAllUsersFromDB();
@@ -52,4 +76,5 @@ export const UserControllers = {
   createUser,
   getAllUsers,
   getSingleUserByUserId,
+  updateUserByUserId,
 };
