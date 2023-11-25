@@ -41,6 +41,7 @@ Before installing the application, ensure that you have the following prerequisi
 4. **Configure Environment Variables**
 
    You may need to create a `.env` file at the root of your project and define any necessary environment variables such as database URI, port number, etc.
+   Or You can rename the `.env.example` file and put your environment variables.
 
 5. **Build the Project**
 
@@ -91,6 +92,9 @@ Before installing the application, ensure that you have the following prerequisi
   ```sh
   npm run prettier:fix
   ```
+
+- **Deploying**
+  You can deploy the application on vercel using vercel cli or use other platform. You can follow this article on [How to Deploy an Express API to Vercel](https://shadowsmith.com/thoughts/how-to-deploy-an-express-api-to-vercel)
 
 ## Testing the API
 
